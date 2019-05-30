@@ -20,9 +20,11 @@ Firebase.getCampers = async () => {
   try {
     const querySnapshot = await db.collection('campers').get();
     const campers = querySnapshot.docs.map((doc) => {
-      const { name, cabin, amount } = doc.data();
+      const {
+        name, cabin, amount, purchases,
+      } = doc.data();
       return {
-        id: doc.id, name, cabin, amount,
+        id: doc.id, name, cabin, amount, purchases,
       };
     });
     return campers;
@@ -42,8 +44,7 @@ Firebase.addCamper = async (payload) => {
 
 Firebase.editCamper = async (payload) => {
   try {
-    // await db.collection('campers');
-    console.log(payload);
+    await db.collection('campers').doc(payload.id).update({ ...payload.data });
     return true;
   } catch (err) {
     return err;
@@ -70,6 +71,33 @@ Firebase.getCabins = async () => {
       };
     });
     return cabins;
+  } catch (err) {
+    return err;
+  }
+};
+
+Firebase.addCabin = async (payload) => {
+  try {
+    await db.collection('cabins').add(payload);
+    return true;
+  } catch (err) {
+    return err;
+  }
+};
+
+Firebase.editCabin = async (payload) => {
+  try {
+    await db.collection('cabins').doc(payload.id).update({ ...payload.data });
+    return true;
+  } catch (err) {
+    return err;
+  }
+};
+
+Firebase.deleteCabin = async (payload) => {
+  try {
+    await db.collection('cabins').doc(payload).delete();
+    return true;
   } catch (err) {
     return err;
   }

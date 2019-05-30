@@ -33,13 +33,7 @@
               <td class="text-xs-left">{{ props.item.cabin }}</td>
               <td class="text-xs-left">${{ props.item.amount }}</td>
               <td class="justify-left layout">
-                <v-icon
-                  class="mr-4"
-                  @click="editCamper(props.item)"
-                  color="green"
-                >
-                  add_shopping_cart
-                </v-icon>
+                <checkout :id="props.item.id" />
                 <edit-camper :id="props.item.id" @resolve="editCamper" />
                 <confirm-deletion-dialog :id="props.item.id" @resolve="deleteCamper" />
               </td>
@@ -63,12 +57,14 @@ import Firebase from '../firebase';
 import AddCamper from '../components/campers/AddCamper.vue';
 import ConfirmDeletionDialog from '../components/ConfirmDeletionDialog.vue';
 import EditCamper from '../components/campers/EditCamper.vue';
+import Checkout from '../components/campers/Checkout.vue';
 
 export default {
   components: {
     AddCamper,
     ConfirmDeletionDialog,
     EditCamper,
+    Checkout,
   },
   data: () => ({
     search: '',
@@ -89,20 +85,8 @@ export default {
     },
     // OLD //
     async editCamper(results) {
-      const { result, index } = results;
-      console.log(result);
-    },
-    async updateCamper(camper) {
-      // eslint-disable-next-line
-      const index = await this.campers.findIndex((x) => {
-        return (
-          x.name === this.curCamper.name
-          && x.cabin === this.curCamper.cabin
-          && x.amount === this.curCamper.amount
-        );
-      });
-      await Vue.set(this.campers, index, camper);
-      localStorage.setItem('campers', JSON.stringify(this.campers));
+      const { result, id, res } = results;
+      this.$store.dispatch('getCampers');
     },
   },
   // NEW //
