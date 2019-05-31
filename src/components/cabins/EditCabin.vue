@@ -54,7 +54,6 @@ export default {
     async dialog() {
       if (!this.done) {
         this.loadingData = true;
-        await this.$store.dispatch('getCabins');
         this.curCabin = await this.cabins.find(el => el.id === this.id).cabin;
         this.loadingData = false;
       } else {

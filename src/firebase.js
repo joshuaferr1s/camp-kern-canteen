@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import Store from './store';
 
 const config = {
   apiKey: 'AIzaSyA2oXAA3-n_sFg2gfLhxbuTSasZALPRj58',
@@ -14,6 +15,64 @@ const config = {
 
 const Firebase = firebase.initializeApp(config);
 const db = firebase.firestore();
+
+// Listeners //
+
+db.collection('campers').onSnapshot((snapshot) => {
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === 'added') {
+      const {
+        name, cabin, amount, purchases,
+      } = change.doc.data();
+      Store.commit('addCamper', {
+        id: change.doc.id, name, cabin, amount, purchases,
+      });
+    } else if (change.type === 'modified') {
+      const {
+        name, cabin, amount, purchases,
+      } = change.doc.data();
+      Store.commit('updateCamper', {
+        id: change.doc.id, name, cabin, amount, purchases,
+      });
+    } else if (change.type === 'removed') {
+      const {
+        name, cabin, amount, purchases,
+      } = change.doc.data();
+      Store.commit('deleteCamper', {
+        id: change.doc.id, name, cabin, amount, purchases,
+      });
+    }
+  });
+});
+
+db.collection('cabins').onSnapshot((snapshot) => {
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === 'added') {
+      const {
+        cabin,
+      } = change.doc.data();
+      Store.commit('addCabin', {
+        id: change.doc.id, cabin,
+      });
+    } else if (change.type === 'modified') {
+      const {
+        cabin,
+      } = change.doc.data();
+      Store.commit('updateCabin', {
+        id: change.doc.id, cabin,
+      });
+    } else if (change.type === 'removed') {
+      const {
+        cabin,
+      } = change.doc.data();
+      Store.commit('deleteCabin', {
+        id: change.doc.id, cabin,
+      });
+    }
+  });
+});
+
+// End of Listeners //
 
 // Campers //
 Firebase.getCampers = async () => {
@@ -35,7 +94,7 @@ Firebase.getCampers = async () => {
 
 Firebase.addCamper = async (payload) => {
   try {
-    await db.collection('campers').add(payload);
+    await db.collection('campers').add({ ...payload, products: [] });
     return true;
   } catch (err) {
     return err;

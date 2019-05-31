@@ -51,7 +51,6 @@ export default {
       const validated = this.validate();
       if (result && Object.keys(validated).length > 0) {
         await Firebase.addCabin({ cabin: this.cabin });
-        this.$store.dispatch('getCabins');
       } else if (result && Object.keys(validated).length === 0) return;
       this.cabin = '';
       this.dialog = false;

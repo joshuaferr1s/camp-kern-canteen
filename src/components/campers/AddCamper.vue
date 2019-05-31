@@ -58,7 +58,6 @@ export default {
     async resolve(result) {
       if (result) {
         await Firebase.addCamper({ name: this.name, cabin: this.cabin, amount: this.amount });
-        this.$store.dispatch('getCampers');
       }
       this.name = '';
       this.cabin = '';

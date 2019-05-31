@@ -72,15 +72,10 @@ export default {
       const { result, id } = results;
       if (!result) return;
       await Firebase.deleteCabin(id);
-      this.$store.dispatch('getCabins');
     },
     async editCabin(results) {
       const { res } = results;
-      this.$store.dispatch('getCabins');
     },
-  },
-  async mounted() {
-    this.$store.dispatch('getCabins');
   },
   computed: {
     ...mapState(['cabins']),

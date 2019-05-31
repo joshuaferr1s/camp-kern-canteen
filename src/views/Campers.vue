@@ -81,18 +81,11 @@ export default {
       const { result, id } = results;
       if (!result) return;
       await Firebase.deleteCamper(id);
-      this.$store.dispatch('getCampers');
     },
     // OLD //
     async editCamper(results) {
       const { result, id, res } = results;
-      this.$store.dispatch('getCampers');
     },
-  },
-  // NEW //
-  async mounted() {
-    this.$store.dispatch('getCampers');
-    this.$store.dispatch('getCabins');
   },
   computed: {
     ...mapState(['campers']),

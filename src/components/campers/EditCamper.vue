@@ -74,8 +74,6 @@ export default {
     async dialog() {
       if (!this.done) {
         this.loadingData = true;
-        await this.$store.dispatch('getCampers');
-        await this.$store.dispatch('getCabins');
         const curCamper = await this.campers.find(el => el.id === this.id);
         this.curName = curCamper.name;
         this.curCabin = curCamper.cabin;

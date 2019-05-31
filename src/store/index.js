@@ -15,7 +15,9 @@ export default new Vuex.Store({
     cabins: [],
     products: [],
   },
-  getters: {},
+  getters: {
+    camper: state => id => state.campers.find(el => el.id === id),
+  },
   mutations: {
     signIn(state) {
       Vue.set(state, 'signedIn', true);
@@ -29,6 +31,28 @@ export default new Vuex.Store({
     SET_CABINS(state, payload) {
       Vue.set(state, 'cabins', payload);
     },
+    addCamper(state, payload) {
+      Vue.set(state, 'campers', [...state.campers, payload]);
+    },
+    updateCamper(state, payload) {
+      const index = state.campers.findIndex(el => el.name === payload.name);
+      Vue.set(state.campers, index, payload);
+    },
+    deleteCamper(state, payload) {
+      const index = state.campers.findIndex(el => el.name === payload.name);
+      Vue.delete(state.campers, index);
+    },
+    addCabin(state, payload) {
+      Vue.set(state, 'cabins', [...state.cabins, payload]);
+    },
+    updateCabin(state, payload) {
+      const index = state.cabins.findIndex(el => el.cabin === payload.cabin);
+      Vue.set(state.cabins, index, payload);
+    },
+    deleteCabin(state, payload) {
+      const index = state.cabins.findIndex(el => el.cabin === payload.cabin);
+      Vue.delete(state.cabins, index);
+    },
   },
   actions: {
     async signIn({ commit }, payload) {
@@ -36,10 +60,6 @@ export default new Vuex.Store({
       const isMatch = await bcrypt.compare(payload, hashed);
       if (isMatch) commit('signIn');
       router.push('/campers');
-    },
-    async getCampers({ commit }) {
-      const campers = await Firebase.getCampers();
-      commit('SET_CAMPERS', campers);
     },
     async getCabins({ commit }) {
       const cabins = await Firebase.getCabins();

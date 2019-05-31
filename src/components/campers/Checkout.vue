@@ -12,8 +12,8 @@
     <v-card class="fullHeight">
       <v-flex xs12 class="fullHeight">
         <v-layout row class="fullHeight">
-          <v-flex xs8 class="blue-grey lighten-4 products">
-            <!-- Products -->
+          <!-- Products -->
+          <v-flex xs9 class="blue-grey lighten-4 products">
             <v-layout column>
               <v-container grid-list-md fluid>
                 <p class="display-1 text-xs-center">Products</p>
@@ -21,7 +21,7 @@
                   <v-flex
                     v-for="(product, index) in products"
                     :key="`product-${index}`"
-                    xs3
+                    xs2
                     @click="addToCart(product)"
                     class="pointer"
                   >
@@ -35,42 +35,98 @@
             </v-layout>
           </v-flex>
           <!-- Total + Actions -->
-          <v-flex xs4 class="fullHeight">
-            <v-layout column justify-space-between class="fullHeight">
-              <v-flex>
-                <v-list subheader class="mainCart">
-                  <v-subheader>Cart</v-subheader>
-                  <v-list-tile
-                    v-for="(item, index) in cart"
-                    :key="`cart-${index}`"
-                    @click="deleteItem(index)"
-                  >
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="item.product"></v-list-tile-title>
-                    </v-list-tile-content>
-                    <v-list-tile-action>
-                      <span>${{ item.price }}</span>
-                    </v-list-tile-action>
-                  </v-list-tile>
-                </v-list>
-                <v-list class="totalCart">
+          <v-flex xs3 class="fullHeight">
+            <v-layout column fill-height>
+              <v-flex class="h10" pl-3>
+                <v-switch v-model="display" :label="`Showing: ${display ? 'Cart' : 'Purchases'}`"></v-switch>
+              </v-flex>
+              <!-- Purchaes/Refund Screen -->
+              <v-flex class="h75" v-if="!display">
+                <v-layout column fill-height>
+                  <v-flex class="h50">
+                    <v-card>
+                      <v-card-title class="subheading font-weight-bold">Purchases</v-card-title>
+                      <v-list dense>
+                        <v-list-tile v-for="(item, index) in minPurc" :key="`cart-${index}`" @click="refundItem(item.product)">
+                          <v-list-tile-content>
+                            <span><span class="font-weight-bold">{{ item.number }}x</span> {{ item.product }}</span>
+                          </v-list-tile-content>
+                          <v-list-tile-content class="align-end">
+                            <span>${{ item.price }}</span>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-card>
+                  </v-flex>
+                  <v-flex class="h50">
+                    <v-divider></v-divider>
+                    <v-card>
+                      <v-card-title class="subheading font-weight-bold">Refunds</v-card-title>
+                      <v-list dense>
+                        <v-list-tile v-for="(item, index) in minRefunds" :key="`cart-${index}`" @click="removeRefundItem(item.product)">
+                          <v-list-tile-content>
+                            <span><span class="font-weight-bold">{{ item.number }}x</span> {{ item.product }}</span>
+                          </v-list-tile-content>
+                          <v-list-tile-content class="align-end">
+                            <span>${{ item.price }}</span>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-card>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <!-- Cart -->
+              <v-flex class="h75" v-else>
+                <v-card>
+                  <v-card-title class="subheading font-weight-bold">Cart</v-card-title>
+                  <v-divider></v-divider>
+                  <v-list dense>
+                    <v-list-tile v-for="(item, index) in minCart" :key="`cart-${index}`" @click="deleteItem(item.product)">
+                      <v-list-tile-content>
+                        <span><span class="font-weight-bold">{{ item.number }}x</span> {{ item.product }}</span>
+                      </v-list-tile-content>
+                      <v-list-tile-content class="align-end">
+                        <span>${{ item.price }}</span>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+              </v-flex>
+              <v-flex class="h15" v-if="!display">
+                <v-list dense>
                   <v-divider inset></v-divider>
                   <v-list-tile>
                     <v-list-tile-content>
-                      <v-list-tile-title>Total</v-list-tile-title>
+                      <v-list-tile-title>Refund</v-list-tile-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
-                      <span>${{ cartTotal }}</span>
+                      <span>${{ this.refundTotal }}</span>
                     </v-list-tile-action>
                   </v-list-tile>
                 </v-list>
-              </v-flex>
-              <div class="height-10">
                 <v-layout row justify-space-between>
                   <v-btn color="error" @click="closeDialog()">Cancel</v-btn>
-                  <v-btn color="primary" @click="checkout()">Process</v-btn>
+                  <v-btn color="primary" @click="refund()">Refund</v-btn>
                 </v-layout>
-              </div>
+              </v-flex>
+              <v-flex class="h15" v-else>
+                <v-list dense>
+                  <v-divider inset></v-divider>
+                  <v-list-tile>
+                    <v-list-tile-content>
+                      <v-list-tile-title>Money Left</v-list-tile-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                      <span>${{ this.camper.amount - cartTotal }}</span>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                </v-list>
+                <v-layout row justify-space-between>
+                  <v-btn color="error" @click="closeDialog()">Cancel</v-btn>
+                  <v-btn color="primary" @click="checkout()">Checkout</v-btn>
+                </v-layout>
+              </v-flex>
             </v-layout>
           </v-flex>
         </v-layout>
@@ -80,7 +136,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import Vue from 'vue';
 import Firebase from '../../firebase';
 
 export default {
@@ -89,6 +145,7 @@ export default {
     return {
       dialog: false,
       done: false,
+      display: true,
       loadingData: true,
       products: [
         {
@@ -193,13 +250,14 @@ export default {
         },
       ],
       cart: [],
-      camper: {
-        amount: null,
-      },
+      tempCart: [],
+      refunds: [],
     };
   },
   computed: {
-    ...mapState(['campers']),
+    camper() {
+      return this.$store.getters.camper(this.id);
+    },
     cartTotal() {
       let result = 0;
       for (let index = 0; index < this.cart.length; index += 1) {
@@ -207,13 +265,52 @@ export default {
       }
       return result;
     },
+    refundTotal() {
+      let result = 0;
+      for (let index = 0; index < this.refunds.length; index += 1) {
+        result += Number(this.refunds[index].price);
+      }
+      return result;
+    },
+    minPurc() {
+      if (!this.camper || !this.camper.purchases) return [];
+      const cart = this.camper.purchases.reduce((acc, curr) => {
+        const index = acc.findIndex(el => el.product === curr.product && el.price === curr.price);
+        if (index < 0) acc.push({ ...curr, number: 1 });
+        else acc[index].number += 1;
+        return acc;
+      }, []);
+      this.minRefunds.forEach((el) => {
+        const index = cart.findIndex(i => el.product === i.product);
+        if (index >= 0) {
+          Vue.set(cart[index], 'number', Number(cart[index].number) - Number(el.number));
+        }
+      });
+      return cart.filter(el => el.number > 0);
+    },
+    minCart() {
+      const cart = this.cart.reduce((acc, curr) => {
+        const index = acc.findIndex(el => el.product === curr.product && el.price === curr.price);
+        if (index < 0) acc.push({ ...curr, number: 1 });
+        else acc[index].number += 1;
+        return acc;
+      }, []);
+      return cart;
+    },
+    minRefunds() {
+      const refunds = this.refunds.reduce((acc, curr) => {
+        const index = acc.findIndex(el => el.product === curr.product && el.price === curr.price);
+        if (index < 0) acc.push({ ...curr, number: 1 });
+        else acc[index].number += 1;
+        return acc;
+      }, []);
+      return refunds;
+    },
   },
   watch: {
     async dialog() {
       if (!this.done) {
         this.loadingData = true;
-        await this.$store.dispatch('getCampers');
-        this.camper = await this.campers.find(el => el.id === this.id);
         this.loadingData = false;
       } else {
         this.done = false;
@@ -227,25 +324,62 @@ export default {
       this.loadingData = true;
       this.done = true;
     },
-    deleteItem(index) {
+    deleteItem(product) {
+      const index = this.cart.findIndex(el => el.product === product);
       this.cart.splice(index, 1);
     },
+    removeRefundItem(product) {
+      const index = this.refunds.findIndex(el => el.product === product);
+      this.refunds.splice(index, 1);
+    },
+    refundItem(product) {
+      const item = this.camper.purchases.find(el => el.product === product);
+      const min = this.minPurc.find(el => el.product === product);
+      if (Number(min.number) <= 0) return;
+      this.refunds.push(item);
+    },
     addToCart(item) {
-      if (Number(this.camper.amount) - this.cartTotal - Number(item.price) < 0) return;
+      if ((Number(this.camper.amount) - Number(this.cartTotal) - Number(item.price) < 0) || !this.display) return;
       this.cart.push(item);
+    },
+    async refund() {
+      const purchases = [...this.camper.purchases];
+      this.refunds.forEach((el) => {
+        const index = purchases.findIndex(i => el.product === i.product);
+        Vue.delete(purchases, index);
+      });
+      const camper = {
+        id: this.id,
+        data: {
+          amount: String(Number(this.camper.amount) + Number(this.refundTotal)),
+          purchases,
+        },
+      };
+      this.tempRefunds = [...this.refunds];
+      this.refunds = [];
+      const res = await Firebase.editCamper(camper);
+      if (res.message) {
+        this.refunds = [...this.tempRefunds];
+        this.tempRefunds = [];
+      }
+      this.tempRefunds = [];
     },
     async checkout() {
       const camper = {
         id: this.id,
         data: {
-          amount: String(this.camper.amount - this.cartTotal),
+          amount: String(Number(this.camper.amount) - Number(this.cartTotal)),
           purchases: [...(this.camper.purchases ? this.camper.purchases : []), ...this.cart],
         },
       };
+      this.tempCart = [...this.cart];
+      this.cart = [];
       const res = await Firebase.editCamper(camper);
-      if (res.message) return;
-      await this.$store.dispatch('getCampers');
-      this.closeDialog();
+      if (res.message) {
+        this.cart = [...this.tempCart];
+        this.tempCart = [];
+      }
+      this.tempCart = [];
     },
   },
 };
@@ -258,19 +392,24 @@ export default {
 .fullHeight {
   height: 100vh;
 }
-.height-10 {
-  height: 10vh;
-}
 .products {
   max-height: 100vh;
   overflow-y: auto;
 }
-.mainCart {
-  max-height: 80vh;
+.h10 {
+  max-height: 10%;
   overflow-y: auto;
 }
-.totalCart {
-  max-height: 10vh;
+.h75 {
+  max-height: 75%;
+  overflow-y: auto;
+}
+.h15 {
+  max-height: 15%;
+  overflow-y: auto;
+}
+.h50 {
+  max-height: 50%;
   overflow-y: auto;
 }
 </style>
