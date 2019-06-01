@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="290">
     <template v-slot:activator="{on}">
-      <v-btn color="pink" dark @click="dialog = true">
+      <v-btn color="primary" dark @click="dialog = true">
         Add a Camper
       </v-btn>
     </template>
@@ -48,7 +48,7 @@ export default {
       dialog: false,
       name: '',
       cabin: '',
-      amount: null,
+      amount: '',
     };
   },
   computed: {
@@ -56,12 +56,13 @@ export default {
   },
   methods: {
     async resolve(result) {
+      if (result && (this.name === '' || this.cabin === '' || this.amount === '')) return;
       if (result) {
         await Firebase.addCamper({ name: this.name, cabin: this.cabin, amount: this.amount });
       }
       this.name = '';
       this.cabin = '';
-      this.amount = null;
+      this.amount = '';
       this.dialog = false;
     },
   },

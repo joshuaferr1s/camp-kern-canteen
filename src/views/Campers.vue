@@ -3,7 +3,7 @@
     <div id="campers-view">
       <!-- Search Bar + Add Camper -->
       <v-layout row>
-        <v-flex xs10>
+        <v-flex xs9>
           <v-text-field
             v-model="search"
             single-line
@@ -14,6 +14,11 @@
         </v-flex>
         <v-flex xs2>
           <add-camper />
+        </v-flex>
+        <v-flex xs1>
+          <v-btn fab small color="black">
+            <confirm-deletion-dialog id="2" @resolve="deleteAllCampers" />
+          </v-btn>
         </v-flex>
       </v-layout>
 
@@ -77,6 +82,11 @@ export default {
   }),
   methods: {
     // NEW //
+    async deleteAllCampers(results) {
+      const { result } = results;
+      if (!result) return;
+      await Firebase.deleteCampers();
+    },
     async deleteCamper(results) {
       const { result, id } = results;
       if (!result) return;

@@ -86,6 +86,7 @@ export default {
   },
   methods: {
     validate() {
+      if (this.name === '' || this.cabin === '' || this.amount === '') return {};
       const exists = this.campers.find(el => el.name === this.name, this);
       if (exists) return {};
       return Object.assign(

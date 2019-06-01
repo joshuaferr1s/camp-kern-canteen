@@ -119,6 +119,18 @@ Firebase.deleteCamper = async (payload) => {
   }
 };
 
+Firebase.deleteCampers = async () => {
+  try {
+    const batch = db.batch();
+    const docs = await db.collection('campers').get();
+    docs.docs.map(val => batch.delete(val.ref));
+    await batch.commit();
+    return true;
+  } catch (err) {
+    return err;
+  }
+};
+
 // Cabins
 Firebase.getCabins = async () => {
   try {
