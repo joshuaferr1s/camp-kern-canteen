@@ -137,6 +137,7 @@
 
 <script>
 import Vue from 'vue';
+import { mapState } from 'vuex';
 import Firebase from '../../firebase';
 
 export default {
@@ -147,114 +148,13 @@ export default {
       done: false,
       display: true,
       loadingData: true,
-      products: [
-        {
-          product: '3/4 Sleeve OH T',
-          price: '18',
-        },
-        {
-          product: 'Bandana',
-          price: '6',
-        },
-        {
-          product: 'Water Bottle',
-          price: '10',
-        },
-        {
-          product: '1 Sticker',
-          price: '2',
-        },
-        {
-          product: '3 Stickers',
-          price: '5',
-        },
-        {
-          product: 'Carabiner',
-          price: '3',
-        },
-        {
-          product: 'Deck of Cards',
-          price: '5',
-        },
-        {
-          product: 'Firestarter',
-          price: '2',
-        },
-        {
-          product: 'Flashlight',
-          price: '6',
-        },
-        {
-          product: 'Knit Hat',
-          price: '10',
-        },
-        {
-          product: 'Hooded Sweatshirt',
-          price: '30',
-        },
-        {
-          product: 'Light Wand',
-          price: '5',
-        },
-        {
-          product: 'Long Sleeve Ranch T',
-          price: '15',
-        },
-        {
-          product: 'Notebook & Pen',
-          price: '7',
-        },
-        {
-          product: 'Ohio T',
-          price: '15',
-        },
-        {
-          product: 'Patches',
-          price: '4',
-        },
-        {
-          product: 'Pen',
-          price: '1',
-        },
-        {
-          product: '1 Vintage Pin',
-          price: '3',
-        },
-        {
-          product: '2 Vintage Pins',
-          price: '5',
-        },
-        {
-          product: '5 Vintage Pins',
-          price: '10',
-        },
-        {
-          product: 'Poncho',
-          price: '5',
-        },
-        {
-          product: 'Socks',
-          price: '10',
-        },
-        {
-          product: 'Stuffed Animal',
-          price: '8',
-        },
-        {
-          product: 'Sunglasses',
-          price: '5',
-        },
-        {
-          product: 'Tshirts',
-          price: '12',
-        },
-      ],
       cart: [],
       tempCart: [],
       refunds: [],
     };
   },
   computed: {
+    ...mapState(['products']),
     camper() {
       return this.$store.getters.camper(this.id);
     },

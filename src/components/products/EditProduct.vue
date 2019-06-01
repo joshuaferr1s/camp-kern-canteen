@@ -4,7 +4,7 @@
       <v-icon @click="dialog = true" color="orange" class="mr-4">edit</v-icon>
     </template>
     <v-card>
-      <v-card-title class="headline">Edit Camper</v-card-title>
+      <v-card-title class="headline">Edit Product</v-card-title>
       <v-card-text v-if="loadingData" class="text-xs-center">
         <v-progress-circular
           indeterminate
@@ -14,26 +14,16 @@
       <v-card-text v-else>
         <v-container grid-list-md>
           <v-text-field
-            v-model="name"
-            ref="name"
-            label="Name"
-            :placeholder="curName"
+            v-model="product"
+            ref="product"
+            label="Product"
+            :placeholder="curProduct.product"
           ></v-text-field>
-          <v-select
-            v-model="cabin"
-            ref="cabin"
-            :items="cabins"
-            item-text="cabin"
-            item-value="cabin"
-            label="Cabin"
-            :placeholder="curCabin"
-          ></v-select>
           <v-text-field
-            v-model="amount"
-            ref="amount"
-            label="Amount"
-            mask="####"
-            :placeholder="curAmount"
+            v-model="price"
+            ref="price"
+            label="Price"
+            :placeholder="curProduct.price"
           ></v-text-field>
           <p class="red--text" v-if="errorMsg">Error Code: {{ errorMsg }}</p>
         </v-container>
@@ -59,25 +49,19 @@ export default {
       done: false,
       errorMsg: null,
       loadingData: true,
-      curName: '',
-      curCabin: '',
-      curAmount: '',
-      name: '',
-      cabin: '',
-      amount: '',
+      curProduct: {},
+      product: '',
+      price: '',
     };
   },
   computed: {
-    ...mapState(['campers', 'cabins']),
+    ...mapState(['products']),
   },
   watch: {
     async dialog() {
       if (!this.done) {
         this.loadingData = true;
-        const curCamper = await this.campers.find(el => el.id === this.id);
-        this.curName = curCamper.name;
-        this.curCabin = curCamper.cabin;
-        this.curAmount = curCamper.amount;
+        this.curProduct = await this.products.find(el => el.id === this.id);
         this.loadingData = false;
       } else {
         this.done = false;
@@ -86,35 +70,30 @@ export default {
   },
   methods: {
     validate() {
-      const exists = this.campers.find(el => el.name === this.name, this);
+      const exists = this.products.find(el => el.product === this.product && el.price === this.price, this);
       if (exists) return {};
       return Object.assign(
         {},
-        this.name === '' ? undefined : { name: this.name },
-        this.cabin === '' ? undefined : { cabin: this.cabin },
-        this.amount === '' ? undefined : { amount: this.amount },
+        this.product === '' ? undefined : { product: this.product },
+        this.price === '' ? undefined : { price: this.price },
       );
     },
     async resolve(result) {
       const validated = this.validate();
       let res = null;
       if (result && Object.keys(validated).length > 0) {
-        res = await Firebase.editCamper({ id: this.id, data: { ...validated } });
+        res = await Firebase.editProduct({ id: this.id, data: validated });
         if (res.message) {
           this.errorMsg = res.code;
           return;
         }
-      }
-      this.$emit('resolve', { result, id: this.camper, res });
+      } else if (result && Object.keys(validated).length === 0) return;
+      this.$emit('resolve', { result, id: this.id, res });
       this.dialog = false;
-      this.curId = '';
-      this.curName = '';
-      this.curCabin = '';
-      this.curAmount = '';
-      this.name = '';
-      this.cabin = '';
-      this.amount = '';
-      this.loadingData = false;
+      this.curProduct = {};
+      this.product = '';
+      this.price = '';
+      this.loadingData = true;
       this.errorMsg = null;
       this.done = true;
     },

@@ -4,6 +4,7 @@ import store from './store';
 import Campers from './views/Campers.vue';
 import Cabins from './views/Cabins.vue';
 import SignIn from './views/SignIn.vue';
+import Products from './views/Products.vue';
 
 Vue.use(Router);
 
@@ -31,6 +32,14 @@ const router = new Router({
       path: '/cabins',
       name: 'cabins',
       component: Cabins,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: Products,
       meta: {
         requiresAuth: true,
       },

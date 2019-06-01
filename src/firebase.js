@@ -72,6 +72,33 @@ db.collection('cabins').onSnapshot((snapshot) => {
   });
 });
 
+db.collection('products').onSnapshot((snapshot) => {
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === 'added') {
+      const {
+        product, price,
+      } = change.doc.data();
+      Store.commit('addProduct', {
+        id: change.doc.id, product, price,
+      });
+    } else if (change.type === 'modified') {
+      const {
+        product, price,
+      } = change.doc.data();
+      Store.commit('updateProduct', {
+        id: change.doc.id, product, price,
+      });
+    } else if (change.type === 'removed') {
+      const {
+        name, cabin, amount, purchases,
+      } = change.doc.data();
+      Store.commit('deleteCamper', {
+        id: change.doc.id, name, cabin, amount, purchases,
+      });
+    }
+  });
+});
+
 // End of Listeners //
 
 // Campers //
@@ -175,5 +202,60 @@ Firebase.deleteCabin = async (payload) => {
 };
 
 // Products
+Firebase.getProducts = async () => {
+  try {
+    const querySnapshot = await db.collection('products').get();
+    const products = querySnapshot.docs.map((doc) => {
+      const {
+        product, price,
+      } = doc.data();
+      return {
+        id: doc.id, product, price,
+      };
+    });
+    return products;
+  } catch (err) {
+    return err;
+  }
+};
+
+Firebase.addProduct = async (payload) => {
+  try {
+    await db.collection('products').add({ ...payload });
+    return true;
+  } catch (err) {
+    return err;
+  }
+};
+
+Firebase.editProduct = async (payload) => {
+  try {
+    await db.collection('products').doc(payload.id).update({ ...payload.data });
+    return true;
+  } catch (err) {
+    return err;
+  }
+};
+
+Firebase.deleteProduct = async (payload) => {
+  try {
+    await db.collection('products').doc(payload).delete();
+    return true;
+  } catch (err) {
+    return err;
+  }
+};
+
+Firebase.deleteProducts = async () => {
+  try {
+    const batch = db.batch();
+    const docs = await db.collection('products').get();
+    docs.docs.map(val => batch.delete(val.ref));
+    await batch.commit();
+    return true;
+  } catch (err) {
+    return err;
+  }
+};
 
 export default Firebase;

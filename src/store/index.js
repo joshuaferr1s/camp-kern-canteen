@@ -25,33 +25,38 @@ export default new Vuex.Store({
     signOut(state) {
       Vue.set(state, 'signedIn', false);
     },
-    SET_CAMPERS(state, payload) {
-      Vue.set(state, 'campers', payload);
-    },
-    SET_CABINS(state, payload) {
-      Vue.set(state, 'cabins', payload);
-    },
     addCamper(state, payload) {
       Vue.set(state, 'campers', [...state.campers, payload]);
     },
     updateCamper(state, payload) {
-      const index = state.campers.findIndex(el => el.name === payload.name);
+      const index = state.campers.findIndex(el => el.id === payload.id);
       Vue.set(state.campers, index, payload);
     },
     deleteCamper(state, payload) {
-      const index = state.campers.findIndex(el => el.name === payload.name);
+      const index = state.campers.findIndex(el => el.id === payload.id);
       Vue.delete(state.campers, index);
     },
     addCabin(state, payload) {
       Vue.set(state, 'cabins', [...state.cabins, payload]);
     },
     updateCabin(state, payload) {
-      const index = state.cabins.findIndex(el => el.cabin === payload.cabin);
+      const index = state.cabins.findIndex(el => el.id === payload.id);
       Vue.set(state.cabins, index, payload);
     },
     deleteCabin(state, payload) {
-      const index = state.cabins.findIndex(el => el.cabin === payload.cabin);
+      const index = state.cabins.findIndex(el => el.id === payload.id);
       Vue.delete(state.cabins, index);
+    },
+    addProduct(state, payload) {
+      Vue.set(state, 'products', [...state.products, payload]);
+    },
+    updateProduct(state, payload) {
+      const index = state.products.findIndex(el => el.id === payload.id);
+      Vue.set(state.products, index, payload);
+    },
+    deleteProduct(state, payload) {
+      const index = state.products.findIndex(el => el.id === payload.id);
+      Vue.delete(state.products, index);
     },
   },
   actions: {

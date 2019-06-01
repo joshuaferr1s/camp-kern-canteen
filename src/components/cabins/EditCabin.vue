@@ -63,7 +63,6 @@ export default {
   },
   methods: {
     validate() {
-      if (this.cabin === '') return {};
       const exists = this.cabins.find(el => el.cabin === this.cabin, this);
       if (exists) return {};
       return Object.assign(
