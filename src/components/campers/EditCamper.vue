@@ -35,6 +35,13 @@
             mask="####"
             :placeholder="curAmount"
           ></v-text-field>
+          <v-select
+            v-model="method"
+            ref="method"
+            :items="methods"
+            label="Method"
+            :placeholder="curMethod"
+          ></v-select>
           <p class="red--text" v-if="errorMsg">Error Code: {{ errorMsg }}</p>
         </v-container>
       </v-card-text>
@@ -65,6 +72,8 @@ export default {
       name: '',
       cabin: '',
       amount: '',
+      method: '',
+      methods: ['Cash', 'Card', 'Check'],
     };
   },
   computed: {
@@ -78,6 +87,7 @@ export default {
         this.curName = curCamper.name;
         this.curCabin = curCamper.cabin;
         this.curAmount = curCamper.amount;
+        this.curMethod = curCamper.method;
         this.loadingData = false;
       } else {
         this.done = false;
@@ -93,6 +103,7 @@ export default {
         this.name === '' ? undefined : { name: this.name },
         this.cabin === '' ? undefined : { cabin: this.cabin },
         this.amount === '' ? undefined : { amount: this.amount },
+        this.method === '' ? undefined : { method: this.method },
       );
     },
     async resolve(result) {
@@ -111,9 +122,11 @@ export default {
       this.curName = '';
       this.curCabin = '';
       this.curAmount = '';
+      this.curMethod = '';
       this.name = '';
       this.cabin = '';
       this.amount = '';
+      this.method = '';
       this.loadingData = false;
       this.errorMsg = null;
       this.done = true;

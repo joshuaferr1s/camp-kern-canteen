@@ -1,22 +1,9 @@
-* [] Base State
-  * [] Database 
-  * [] Campers
-    * [] add a camper
-    * [] edit a camper
-    * [] delete a camper
-    * [] filter campers by cabin dropdown as well as search bar
-  * [] Products
-    * [] add a product
-    * [] edit a product
-    * [] delete a product
-  * [] Cabins
-    * [] add a cabin
-    * [] edit a cabin
-    * [] delete a cabin
-* [] Camper Interactions
-  * [] camper can buy a product
-  * [] camper can be refunded a product value
-  * [] staff can see campers purchases and refunds
+* [] Error messages
+  * [] Users should be alerted to success by toasts
+  * [] Users should be alerted to errors by <v-alert>'s
+* [] Batch add campers
+* [] Make it look nice
+* [] filter campers by cabin dropdown as well as search bar
 * [] Canteen Statistics
   * [] should be able to see total made in periods of time
   * [] should be able to see average spend

@@ -27,6 +27,12 @@
           label="Amount"
           mask="####"
         ></v-text-field>
+        <v-select
+          v-model="method"
+          ref="method"
+          :items="methods"
+          label="Method"
+        ></v-select>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -49,6 +55,8 @@ export default {
       name: '',
       cabin: '',
       amount: '',
+      method: '',
+      methods: ['Cash', 'Card', 'Check'],
     };
   },
   computed: {
@@ -56,13 +64,16 @@ export default {
   },
   methods: {
     async resolve(result) {
-      if (result && (this.name === '' || this.cabin === '' || this.amount === '')) return;
+      if (result && (this.name === '' || this.cabin === '' || this.amount === '' || this.method === '')) return;
       if (result) {
-        await Firebase.addCamper({ name: this.name, cabin: this.cabin, amount: this.amount });
+        await Firebase.addCamper({
+          name: this.name, cabin: this.cabin, amount: this.amount, method: this.method,
+        });
       }
       this.name = '';
       this.cabin = '';
       this.amount = '';
+      this.method = '';
       this.dialog = false;
     },
   },

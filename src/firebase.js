@@ -21,25 +21,27 @@ const db = firebase.firestore();
 db.collection('campers').onSnapshot((snapshot) => {
   snapshot.docChanges().forEach((change) => {
     if (change.type === 'added') {
-      const {
-        name, cabin, amount, purchases,
-      } = change.doc.data();
-      Store.commit('addCamper', {
-        id: change.doc.id, name, cabin, amount, purchases,
-      });
+      if (!change.doc.metadata.fromCache) {
+        const {
+          name, cabin, amount, purchases, method,
+        } = change.doc.data();
+        Store.commit('addCamper', {
+          id: change.doc.id, name, cabin, amount, purchases, method,
+        });
+      }
     } else if (change.type === 'modified') {
       const {
-        name, cabin, amount, purchases,
+        name, cabin, amount, purchases, method,
       } = change.doc.data();
       Store.commit('updateCamper', {
-        id: change.doc.id, name, cabin, amount, purchases,
+        id: change.doc.id, name, cabin, amount, purchases, method,
       });
     } else if (change.type === 'removed') {
       const {
-        name, cabin, amount, purchases,
+        name, cabin, amount, purchases, method,
       } = change.doc.data();
       Store.commit('deleteCamper', {
-        id: change.doc.id, name, cabin, amount, purchases,
+        id: change.doc.id, name, cabin, amount, purchases, method,
       });
     }
   });
@@ -92,7 +94,7 @@ db.collection('products').onSnapshot((snapshot) => {
       const {
         name, cabin, amount, purchases,
       } = change.doc.data();
-      Store.commit('deleteCamper', {
+      Store.commit('deleteProduct', {
         id: change.doc.id, name, cabin, amount, purchases,
       });
     }
@@ -107,10 +109,10 @@ Firebase.getCampers = async () => {
     const querySnapshot = await db.collection('campers').get();
     const campers = querySnapshot.docs.map((doc) => {
       const {
-        name, cabin, amount, purchases,
+        name, cabin, amount, purchases, method,
       } = doc.data();
       return {
-        id: doc.id, name, cabin, amount, purchases,
+        id: doc.id, name, cabin, amount, purchases, method,
       };
     });
     return campers;

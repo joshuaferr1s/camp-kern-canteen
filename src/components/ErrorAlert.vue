@@ -21,6 +21,9 @@ export default {
       if (this.errorMsg !== null) this.dialog = true;
       else this.dialog = false;
     },
+    dialog() {
+      if (!this.dialog) this.$emit('closed', true);
+    },
   },
 };
 </script>
