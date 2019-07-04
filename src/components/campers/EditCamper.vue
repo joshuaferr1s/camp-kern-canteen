@@ -42,6 +42,14 @@
             label="Method"
             :placeholder="curMethod"
           ></v-select>
+          <v-select
+            v-model="sessions"
+            ref="sessions"
+            :items="sessionsMaster"
+            multiple
+            label="Sessions"
+            :placeholder="curSessions.join(',')"
+          ></v-select>
           <p class="red--text" v-if="errorMsg">Error Code: {{ errorMsg }}</p>
         </v-container>
       </v-card-text>
@@ -69,10 +77,13 @@ export default {
       curName: '',
       curCabin: '',
       curAmount: '',
+      curSessions: [],
       name: '',
       cabin: '',
       amount: '',
       method: '',
+      sessions: [],
+      sessionsMaster: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
       methods: ['Cash', 'Card', 'Check'],
     };
   },
@@ -88,6 +99,7 @@ export default {
         this.curCabin = curCamper.cabin;
         this.curAmount = curCamper.amount;
         this.curMethod = curCamper.method;
+        this.curSessions = curCamper.sessions ? curCamper.sessions : [];
         this.loadingData = false;
       } else {
         this.done = false;
@@ -104,6 +116,7 @@ export default {
         this.cabin === '' ? undefined : { cabin: this.cabin },
         this.amount === '' ? undefined : { amount: this.amount },
         this.method === '' ? undefined : { method: this.method },
+        this.sessions === [] ? undefined : { sessions: this.sessions },
       );
     },
     async resolve(result) {
@@ -123,10 +136,12 @@ export default {
       this.curCabin = '';
       this.curAmount = '';
       this.curMethod = '';
+      this.curSessions = [];
       this.name = '';
       this.cabin = '';
       this.amount = '';
       this.method = '';
+      this.sessions = [];
       this.loadingData = false;
       this.errorMsg = null;
       this.done = true;

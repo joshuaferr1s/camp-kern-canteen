@@ -33,6 +33,13 @@
           :items="methods"
           label="Method"
         ></v-select>
+        <v-select
+          v-model="sessions"
+          ref="sessions"
+          :items="sessionsMaster"
+          multiple
+          label="Sessions"
+        ></v-select>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -56,6 +63,8 @@ export default {
       cabin: '',
       amount: '',
       method: '',
+      sessions: [],
+      sessionsMaster: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
       methods: ['Cash', 'Card', 'Check'],
     };
   },
@@ -64,16 +73,17 @@ export default {
   },
   methods: {
     async resolve(result) {
-      if (result && (this.name === '' || this.cabin === '' || this.amount === '' || this.method === '')) return;
+      if (result && (this.name === '' || this.cabin === '' || this.amount === '' || this.method === '' || this.sessions.length === 0)) return;
       if (result) {
         await Firebase.addCamper({
-          name: this.name, cabin: this.cabin, amount: this.amount, method: this.method,
+          name: this.name, cabin: this.cabin, amount: this.amount, method: this.method, sessions: this.sessions,
         });
       }
       this.name = '';
       this.cabin = '';
       this.amount = '';
       this.method = '';
+      this.sessions = [];
       this.dialog = false;
     },
   },

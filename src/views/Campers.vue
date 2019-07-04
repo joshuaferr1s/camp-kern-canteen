@@ -21,15 +21,24 @@
           </v-btn>
         </v-flex>
       </v-layout>
-      <v-layout row>
-        <v-flex xs4 justify-center>
-          <v-checkbox v-model="methods" label="Cash" value="Cash"></v-checkbox>
+      <v-layout row justify-space-between>
+        <v-flex xs5>
+          <v-select
+            v-model="sessions"
+            ref="sessions"
+            :items="sessionsMaster"
+            multiple
+            label="Sessions"
+          ></v-select>
         </v-flex>
-        <v-flex xs4 align-center>
-          <v-checkbox v-model="methods" label="Card" value="Card"></v-checkbox>
-        </v-flex>
-        <v-flex xs4 class="text-xs-center">
-          <v-checkbox v-model="methods" label="Check" value="Check"></v-checkbox>
+        <v-flex xs5>
+          <v-select
+            v-model="payments"
+            ref="payments"
+            :items="paymentsMaster"
+            multiple
+            label="Payment Types"
+          ></v-select>
         </v-flex>
       </v-layout>
 
@@ -49,6 +58,7 @@
               <td class="text-xs-left">{{ props.item.cabin }}</td>
               <td class="text-xs-left">${{ props.item.amount }}</td>
               <td class="text-xs-left">{{ props.item.method }}</td>
+              <td class="text-xs-left">{{ props.item.sessions ? props.item.sessions.join(', ') : '' }}</td>
               <td class="justify-left layout">
                 <checkout :id="props.item.id" />
                 <edit-camper :id="props.item.id" @resolve="editCamper" />
@@ -84,14 +94,18 @@ export default {
   },
   data: () => ({
     search: '',
-    methods: [],
     headers: [
       { text: 'Camper Name', value: 'name' },
       { text: 'Cabin', value: 'cabin' },
       { text: 'Amount', value: 'amount' },
       { text: 'Method', value: 'method', sortable: false },
+      { text: 'Sessions', value: 'sessions', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
+    sessions: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    sessionsMaster: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    payments: ['Card', 'Cash', 'Check'],
+    paymentsMaster: ['Card', 'Cash', 'Check'],
   }),
   methods: {
     // NEW //
@@ -113,8 +127,12 @@ export default {
   computed: {
     ...mapState(['campers']),
     filteredCampers() {
-      if (this.methods.length === 0) return this.campers;
-      return this.campers.filter(el => this.methods.includes(el.method));
+      return this.campers.filter((el) => {
+        let status = true;
+        status = this.sessions.every(i => el.sessions ? el.sessions.includes(i) : true);
+        if (!this.payments.includes(el.method)) status = false;
+        return status;
+      });
     },
   },
 };

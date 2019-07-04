@@ -23,25 +23,25 @@ db.collection('campers').onSnapshot((snapshot) => {
     if (change.type === 'added') {
       if (!change.doc.metadata.fromCache) {
         const {
-          name, cabin, amount, purchases, method,
+          name, cabin, amount, purchases, method, sessions,
         } = change.doc.data();
         Store.commit('addCamper', {
-          id: change.doc.id, name, cabin, amount, purchases, method,
+          id: change.doc.id, name, cabin, amount, purchases, method, sessions,
         });
       }
     } else if (change.type === 'modified') {
       const {
-        name, cabin, amount, purchases, method,
+        name, cabin, amount, purchases, method, sessions,
       } = change.doc.data();
       Store.commit('updateCamper', {
-        id: change.doc.id, name, cabin, amount, purchases, method,
+        id: change.doc.id, name, cabin, amount, purchases, method, sessions,
       });
     } else if (change.type === 'removed') {
       const {
-        name, cabin, amount, purchases, method,
+        name, cabin, amount, purchases, method, sessions,
       } = change.doc.data();
       Store.commit('deleteCamper', {
-        id: change.doc.id, name, cabin, amount, purchases, method,
+        id: change.doc.id, name, cabin, amount, purchases, method, sessions,
       });
     }
   });
@@ -109,10 +109,10 @@ Firebase.getCampers = async () => {
     const querySnapshot = await db.collection('campers').get();
     const campers = querySnapshot.docs.map((doc) => {
       const {
-        name, cabin, amount, purchases, method,
+        name, cabin, amount, purchases, method, sessions,
       } = doc.data();
       return {
-        id: doc.id, name, cabin, amount, purchases, method,
+        id: doc.id, name, cabin, amount, purchases, method, sessions,
       };
     });
     return campers;
